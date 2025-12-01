@@ -11,6 +11,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/nugget/400/400',
     stock: 100,
     weight: 500,
+    composition: "Daging Ayam Pilihan, Tepung Roti, Bumbu Rempah",
     minOrder: 1
   },
   {
@@ -23,6 +24,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/sosis/400/400',
     stock: 50,
     weight: 800,
+    composition: "Daging Sapi Import, Pati Tapioka, Garam, Gula",
     minOrder: 1
   },
   {
@@ -35,6 +37,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/dimsum/400/400',
     stock: 200,
     weight: 600,
+    composition: "Ayam Cincang, Udang Segar, Kulit Pangsit, Minyak Wijen",
     minOrder: 2
   },
   {
@@ -47,6 +50,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/cireng/400/400',
     stock: 300,
     weight: 400,
+    composition: "Tepung Tapioka, Bawang Putih, Garam, Cabai (Bumbu Rujak)",
     minOrder: 5
   },
   {
@@ -59,6 +63,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/bakso/400/400',
     stock: 80,
     weight: 1000,
+    composition: "Daging Sapi Segar, Tepung Sagu, Bawang Putih, Merica",
     minOrder: 1
   },
   {
@@ -71,6 +76,7 @@ export const MOCK_PRODUCTS: Product[] = [
     image: 'https://picsum.photos/seed/risol/400/400',
     stock: 120,
     weight: 500,
+    composition: "Tepung Terigu, Telur, Mayonaise, Smoked Beef, Susu",
     minOrder: 1
   }
 ];

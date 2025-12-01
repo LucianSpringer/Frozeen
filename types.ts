@@ -23,6 +23,7 @@ export interface Product {
   image: string;
   stock: number;
   weight: number; // in grams
+  composition?: string;
   minOrder: number;
 }
 
