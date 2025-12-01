@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
     LayoutGrid, ShoppingBag, ShoppingCart,
     MapPin, Heart, Clock, Star,
@@ -10,20 +10,21 @@ import {
 import { useStore } from '../../context/StoreContext';
 
 const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void }> = ({ isOpen, setIsOpen }) => {
-    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const currentView = searchParams.get('view') || 'overview';
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutGrid, label: 'Beranda Member', path: '/dashboard?view=overview' },
-        { icon: ShoppingBag, label: 'Katalog Belanja', path: '/products' },
-        { icon: ShoppingCart, label: 'Keranjang Saya', path: '/cart', badge: true },
-        { icon: Clock, label: 'Riwayat Pesanan', path: '/dashboard?view=orders' },
-        { icon: Heart, label: 'Produk Favorit', path: '/dashboard?view=wishlist' },
-        { icon: MapPin, label: 'Alamat Pengiriman', path: '/dashboard?view=addresses' },
-        { icon: Gift, label: 'Poin & Reward', path: '/dashboard?view=rewards' },
-        { icon: TrendingUp, label: 'Program Partner', path: '/dashboard?view=referral' },
-        { icon: Star, label: 'Ulasan Saya', path: '/dashboard?view=reviews' },
-        { icon: UserIcon, label: 'Profil & Password', path: '/dashboard?view=profile' },
+        { icon: LayoutGrid, label: 'Beranda Member', path: '/dashboard?view=overview', view: 'overview' },
+        { icon: ShoppingBag, label: 'Katalog Belanja', path: '/products', view: null },
+        { icon: ShoppingCart, label: 'Keranjang Saya', path: '/cart', view: null, badge: true },
+        { icon: Clock, label: 'Riwayat Pesanan', path: '/dashboard?view=orders', view: 'orders' },
+        { icon: Heart, label: 'Produk Favorit', path: '/dashboard?view=wishlist', view: 'wishlist' },
+        { icon: MapPin, label: 'Alamat Pengiriman', path: '/dashboard?view=addresses', view: 'addresses' },
+        { icon: Gift, label: 'Poin & Reward', path: '/dashboard?view=rewards', view: 'rewards' },
+        { icon: TrendingUp, label: 'Program Partner', path: '/dashboard?view=referral', view: 'referral' },
+        { icon: Star, label: 'Ulasan Saya', path: '/dashboard?view=reviews', view: 'reviews' },
+        { icon: UserIcon, label: 'Profil & Password', path: '/dashboard?view=profile', view: 'profile' },
     ];
 
     const sidebarClasses = `fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -88,10 +89,10 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
                 {/* Navigation */}
                 <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-280px)]">
                     {menuItems.map((item) => {
-                        const isActive = pathname === item.path;
+                        const isActive = item.view ? currentView === item.view : false;
                         return (
                             <Link
-                                key={item.path}
+                                key={item.label}
                                 href={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive

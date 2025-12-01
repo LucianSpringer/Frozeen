@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
     LayoutDashboard, ShoppingBag, Package, Users,
     FileText, Settings, MessageSquare, LogOut,
@@ -9,19 +9,20 @@ import {
 import { useStore } from '../../context/StoreContext';
 
 const AdminSidebar: React.FC = () => {
-    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const currentView = searchParams.get('view') || 'overview';
     const { logout } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard?view=overview' },
-        { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', badge: true }, // Logic badge nanti dihubungkan
-        { icon: Package, label: 'Manajemen Produk', path: '/dashboard?view=products' },
-        { icon: Users, label: 'Reseller & User', path: '/dashboard?view=users' },
-        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=manage-rewards' },
-        { icon: TrendingUp, label: 'Keuangan & Laporan', path: '/dashboard?view=finance' },
-        { icon: MessageSquare, label: 'Broadcast WA', path: '/dashboard?view=broadcast' },
-        { icon: Settings, label: 'Pengaturan Website', path: '/dashboard?view=settings' },
-        { icon: Shield, label: 'Log Aktivitas', path: '/dashboard?view=logs' },
+        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard?view=overview', view: 'overview' },
+        { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', view: 'orders', badge: true },
+        { icon: Package, label: 'Manajemen Produk', path: '/dashboard?view=products', view: 'products' },
+        { icon: Users, label: 'Reseller & User', path: '/dashboard?view=users', view: 'users' },
+        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=manage-rewards', view: 'manage-rewards' },
+        { icon: TrendingUp, label: 'Keuangan & Laporan', path: '/dashboard?view=finance', view: 'finance' },
+        { icon: MessageSquare, label: 'Broadcast WA', path: '/dashboard?view=broadcast', view: 'broadcast' },
+        { icon: Settings, label: 'Pengaturan Website', path: '/dashboard?view=settings', view: 'settings' },
+        { icon: Shield, label: 'Log Aktivitas', path: '/dashboard?view=logs', view: 'logs' },
     ];
 
     return (
@@ -33,10 +34,10 @@ const AdminSidebar: React.FC = () => {
 
             <nav className="p-4 space-y-2">
                 {menuItems.map((item) => {
-                    const isActive = pathname === item.path;
+                    const isActive = item.view ? currentView === item.view : false;
                     return (
                         <Link
-                            key={item.path}
+                            key={item.label}
                             href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
                                 ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/50'
