@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { LoyaltyProvider } from './context/LoyaltyContext';
+import { ReferralProvider } from './context/ReferralContext';
 import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import ProductCatalog from './pages/ProductCatalog';
@@ -13,6 +14,7 @@ import Checkout from './pages/Checkout';
 import { LoginPage, RegisterPage } from './pages/AuthPages';
 import AdminRewardManager from './pages/admin/AdminRewardManager';
 import MemberRewardPage from './pages/member/MemberRewardPage';
+import ReferralDashboard from './pages/member/ReferralDashboard';
 import { X, MessageCircle, Send } from 'lucide-react';
 
 // Toast Component
@@ -119,24 +121,27 @@ const App = () => {
   return (
     <StoreProvider>
       <LoyaltyProvider>
-        <HashRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/products" element={<ProductCatalog />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
+        <ReferralProvider>
+          <HashRouter>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/products" element={<ProductCatalog />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
 
-              {/* Loyalty System Routes */}
-              <Route path="/admin/loyalty" element={<AdminRewardManager />} />
-              <Route path="/member/rewards" element={<MemberRewardPage />} />
-            </Routes>
-          </Layout>
-        </HashRouter>
+                {/* Loyalty System Routes */}
+                <Route path="/admin/loyalty" element={<AdminRewardManager />} />
+                <Route path="/member/rewards" element={<MemberRewardPage />} />
+                <Route path="/member/referral" element={<ReferralDashboard />} />
+              </Routes>
+            </Layout>
+          </HashRouter>
+        </ReferralProvider>
       </LoyaltyProvider>
     </StoreProvider>
   );

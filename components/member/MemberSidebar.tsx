@@ -20,6 +20,7 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
         { icon: Heart, label: 'Produk Favorit', path: '/member/wishlist' },
         { icon: MapPin, label: 'Alamat Pengiriman', path: '/member/addresses' },
         { icon: Gift, label: 'Poin & Reward', path: '/member/rewards' },
+        { icon: TrendingUp, label: 'Program Partner', path: '/member/referral' },
         { icon: Star, label: 'Ulasan Saya', path: '/member/reviews' },
         { icon: UserIcon, label: 'Profil & Password', path: '/member/profile' },
     ];
@@ -93,8 +94,8 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
                                 to={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive
-                                        ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold'
-                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                                    ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold'
+                                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                                     }`}
                             >
                                 <item.icon size={20} className={`transition-colors ${isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400 group-hover:text-sky-500'}`} />
