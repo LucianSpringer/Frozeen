@@ -1,22 +1,24 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
     LayoutDashboard, ShoppingBag, ShoppingCart,
     Users, DollarSign, User, Share2, LogOut,
-    Target, Gift
+    Target
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 
 const ResellerSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void }> = ({ isOpen, setIsOpen }) => {
     const searchParams = useSearchParams();
-    const currentView = searchParams.get('view') || 'overview';
+    const currentView = searchParams.get('view') || 'dashboard';
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard?view=overview', view: 'overview' },
-        { icon: ShoppingBag, label: 'Katalog Produk', path: '/products', view: null },
-        { icon: ShoppingCart, label: 'Keranjang', path: '/cart', view: null, badge: true },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard?view=dashboard', view: 'dashboard' },
+        { icon: ShoppingBag, label: 'Katalog Produk', path: '/products', view: null }, // External Page
+        { icon: ShoppingCart, label: 'Keranjang', path: '/cart', view: null, badge: true }, // External Page
         { icon: Users, label: 'Downline Saya', path: '/dashboard?view=downlines', view: 'downlines' },
         { icon: DollarSign, label: 'Komisi & Bonus', path: '/dashboard?view=finance', view: 'finance' },
         { icon: Target, label: 'Target & Reward', path: '/dashboard?view=rewards', view: 'rewards' },
@@ -29,79 +31,37 @@ const ResellerSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => vo
 
     return (
         <>
-            {/* Mobile Overlay */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {isOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" onClick={() => setIsOpen(false)} />}
 
             <aside className={sidebarClasses}>
-                {/* Profile Header */}
                 <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-slate-800/50">
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 p-0.5">
-                            <img
-                                src={`https://ui-avatars.com/api/?name=${user?.name}&background=random`}
-                                alt="Profile"
-                                className="w-full h-full rounded-full border-2 border-white dark:border-slate-900"
-                            />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-slate-900 dark:text-white truncate max-w-[120px]">{user?.name}</h3>
-                            <span className="text-xs font-bold text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full">
-                                {user?.role?.toUpperCase()} GOLD
-                            </span>
-                        </div>
-                    </div>
+                    <h3 className="font-bold text-slate-900 dark:text-white">{user?.name}</h3>
+                    <span className="text-xs font-bold text-orange-500">GOLD RESELLER</span>
                 </div>
 
-                {/* Navigation */}
-                <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-180px)]">
+                <nav className="p-4 space-y-1">
                     {menuItems.map((item) => {
-                        const isActive = item.view ? currentView === item.view : false; // External links won't highlight with this logic unless we add pathname check, but user request focused on view.
-                        // For external links like /products, currentView might be null or whatever. 
-                        // Let's stick to user's requested logic: "Active if view matches OR if path matches (for external)"
-                        // User code: const isActive = item.view ? currentView === item.view : false; 
-                        // Wait, user code comment says: // Logic: Active if view matches OR if path matches (for external)
-                        // But the code snippet provided was: const isActive = item.view ? currentView === item.view : false;
-                        // That logic returns false if item.view is null.
-                        // I should probably improve it to check pathname for external links if I can, but let's follow the user's snippet for now or slightly improve it if obvious.
-                        // Actually, for /products, view is null. So isActive is false.
-                        // I will use the user's exact snippet logic to avoid deviation, but I'll check if I should import usePathname too?
-                        // The user said "DELETE THIS (Not used in Next.js)" for useLocation.
-                        // I will assume the user wants the logic they provided.
-
+                        const isActive = item.view ? currentView === item.view : false;
                         return (
                             <Link
                                 key={item.label}
                                 href={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-sky-600 text-white shadow-md shadow-sky-200 dark:shadow-none'
-                                    : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600'
+                                        ? 'bg-sky-600 text-white shadow-md'
+                                        : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 dark:hover:bg-slate-800'
                                     }`}
                             >
-                                <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-sky-500'} />
+                                <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400'} />
                                 <span className="font-medium text-sm">{item.label}</span>
-                                {item.badge && (
-                                    <span className="ml-auto bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                        3
-                                    </span>
-                                )}
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* Footer Actions */}
-                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <button
-                        onClick={logout}
-                        className="flex items-center justify-center gap-2 w-full py-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition font-medium text-sm"
-                    >
-                        <LogOut size={18} /> Keluar Aplikasi
+                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100 dark:border-slate-800">
+                    <button onClick={logout} className="flex items-center gap-2 w-full py-2.5 text-red-500 hover:bg-red-50 rounded-lg transition font-medium text-sm">
+                        <LogOut size={18} /> Keluar
                     </button>
                 </div>
             </aside>

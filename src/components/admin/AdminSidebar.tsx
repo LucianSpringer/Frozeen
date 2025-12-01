@@ -1,27 +1,29 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
     LayoutDashboard, ShoppingBag, Package, Users,
-    FileText, Settings, MessageSquare, LogOut,
+    Settings, MessageSquare, LogOut,
     TrendingUp, Shield, Award
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 
 const AdminSidebar: React.FC = () => {
     const searchParams = useSearchParams();
-    const currentView = searchParams.get('view') || 'overview';
+    const currentView = searchParams.get('view') || 'dashboard';
     const { logout } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard?view=overview', view: 'overview' },
+        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard?view=dashboard', view: 'dashboard' },
         { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', view: 'orders', badge: true },
-        { icon: Package, label: 'Manajemen Produk', path: '/dashboard?view=products', view: 'products' },
-        { icon: Users, label: 'Reseller & User', path: '/dashboard?view=users', view: 'users' },
-        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=manage-rewards', view: 'manage-rewards' },
-        { icon: TrendingUp, label: 'Keuangan & Laporan', path: '/dashboard?view=finance', view: 'finance' },
+        { icon: Package, label: 'Produk', path: '/dashboard?view=products', view: 'products' },
+        { icon: Users, label: 'User & Reseller', path: '/dashboard?view=users', view: 'users' },
+        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=loyalty', view: 'loyalty' }, // IMPORTANT
+        { icon: TrendingUp, label: 'Keuangan', path: '/dashboard?view=finance', view: 'finance' },
         { icon: MessageSquare, label: 'Broadcast WA', path: '/dashboard?view=broadcast', view: 'broadcast' },
-        { icon: Settings, label: 'Pengaturan Website', path: '/dashboard?view=settings', view: 'settings' },
+        { icon: Settings, label: 'Pengaturan', path: '/dashboard?view=settings', view: 'settings' },
         { icon: Shield, label: 'Log Aktivitas', path: '/dashboard?view=logs', view: 'logs' },
     ];
 
@@ -40,29 +42,21 @@ const AdminSidebar: React.FC = () => {
                             key={item.label}
                             href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
-                                ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/50'
-                                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                                ? 'bg-sky-600 text-white shadow-lg'
+                                : 'text-slate-400 hover:bg-slate-800'
                                 }`}
                         >
                             <item.icon size={20} />
                             <span className="font-medium text-sm">{item.label}</span>
-                            {item.badge && (
-                                <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                                    NEW
-                                </span>
-                            )}
                         </Link>
                     );
                 })}
             </nav>
 
             <div className="p-4 mt-auto absolute bottom-0 w-full border-t border-slate-800">
-                <button
-                    onClick={logout}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-xl transition"
-                >
+                <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-xl transition">
                     <LogOut size={20} />
-                    <span className="font-medium text-sm">Logout System</span>
+                    <span className="font-medium text-sm">Logout</span>
                 </button>
             </div>
         </div>
