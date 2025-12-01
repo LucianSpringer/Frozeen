@@ -13,14 +13,14 @@ const ResellerSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => vo
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard?view=overview' },
         { icon: ShoppingBag, label: 'Katalog Produk', path: '/products' },
         { icon: ShoppingCart, label: 'Keranjang', path: '/cart', badge: true },
-        { icon: Users, label: 'Downline Saya', path: '/dashboard?view=referral' },
-        { icon: DollarSign, label: 'Komisi & Bonus', path: '/dashboard?view=referral' },
+        { icon: Users, label: 'Downline Saya', path: '/dashboard?view=downlines' },
+        { icon: DollarSign, label: 'Komisi & Bonus', path: '/dashboard?view=finance' },
         { icon: Target, label: 'Target & Reward', path: '/dashboard?view=rewards' },
-        { icon: Share2, label: 'Materi Promosi', path: '/dashboard?view=referral' },
-        { icon: User, label: 'Profil Akun', path: '/dashboard' },
+        { icon: Share2, label: 'Materi Promosi', path: '/dashboard?view=marketing' },
+        { icon: User, label: 'Profil Akun', path: '/dashboard?view=profile' },
     ];
 
     const sidebarClasses = `fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'

@@ -1,53 +1,39 @@
+// src/context/StoreContext.tsx
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { User, Product, CartItem, Order, UserRole } from '@/types';
+import { InventoryFabricator } from '@/core/simulation/InventoryFabricator'; // CONNECTED!
 
-// Define types locally or import from a shared types file if available
-// For now, defining here to ensure self-containment during migration
-export interface Product {
+interface Notification {
     id: string;
-    sku: string;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    resellerPrice: number;
-    image: string;
-    stock: number;
-    weight: number;
-    minOrder: number;
-    composition?: string;
-}
-
-export interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: 'admin' | 'reseller' | 'member';
-    referralCode?: string;
-    uplineId?: string;
-    walletBalance: number;
-    rewardPoints: number;
-    memberTier: 'regular' | 'silver' | 'gold' | 'platinum';
+    type: 'success' | 'info' | 'error';
+    title: string;
+    message: string;
 }
 
 interface StoreContextType {
     user: User | null;
     products: Product[];
-    cart: any[];
-    addToCart: (product: Product) => void;
-    removeFromCart: (productId: string) => void;
-    updateQuantity: (productId: string, quantity: number) => void;
-    cartTotal: number;
-    login: (email: string, role: User['role']) => void;
-    logout: () => void;
-    notifications: any[];
-    addNotification: (n: any) => void;
-    removeNotification: (id: string) => void;
-    users: User[]; // For admin/referral logic
-    orders: any[];
+    cart: CartItem[];
+    orders: Order[];
+    notifications: Notification[];
     theme: 'light' | 'dark';
     toggleTheme: () => void;
+    login: (email: string, role: UserRole) => boolean;
+    logout: () => void;
+    register: (name: string, email: string, role: UserRole) => { success: boolean; message: string };
+    addToCart: (product: Product, quantity?: number) => void;
+    removeFromCart: (productId: string) => void;
+    updateCartQuantity: (productId: string, quantity: number) => void;
+    clearCart: () => void;
+    placeOrder: (shippingAddress: string, paymentMethod: string) => void;
+    updateOrderStatus: (orderId: string, status: Order['status']) => void;
+    addNotification: (type: 'success' | 'info' | 'error', title: string, message: string) => void;
+    removeNotification: (id: string) => void;
+    newOrderIds: string[];
+    users: User[]; // For admin
+    cartTotal: number;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -55,75 +41,115 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
-    const [cart, setCart] = useState<any[]>([]);
-    const [notifications, setNotifications] = useState<any[]>([]);
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [newOrderIds, setNewOrderIds] = useState<string[]>([]);
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-    // Mock Data Injection for UI Stability
+    // 1. HIGH YIELD: Initialize Procedural Inventory
     useEffect(() => {
-        const mockProducts: Product[] = [
-            {
-                id: 'p1', sku: 'NUG-001', name: 'Chicken Nugget Premium', category: 'Nugget & Tempura',
-                description: 'Nugget ayam dengan daging dada pilihan, tanpa pengawet.',
-                price: 45000, resellerPrice: 35000, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500',
-                stock: 150, weight: 500, minOrder: 1, composition: 'Daging Ayam, Tepung Roti, Bumbu'
-            },
-            {
-                id: 'p2', sku: 'SOS-002', name: 'Sosis Sapi Jumbo', category: 'Bakso & Sosis',
-                description: 'Sosis sapi asli dengan rempah pilihan.',
-                price: 55000, resellerPrice: 45000, image: 'https://images.unsplash.com/photo-1595480670328-b06ab5e6c230?q=80&w=500',
-                stock: 100, weight: 1000, minOrder: 1
-            }
-        ];
-        setProducts(mockProducts);
+        // Generates 1000 unique SKUs on client mount
+        const generatedInventory = InventoryFabricator.synthesizeBatch(1000);
+        setProducts(generatedInventory);
     }, []);
 
-    const addToCart = (product: Product) => {
+    // 2. Theme Logic
+    const toggleTheme = () => {
+        setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+        if (theme === 'light') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+    };
+
+    // 3. Cart Logic (Restored)
+    const addToCart = (product: Product, quantity: number = 1) => {
         setCart(prev => {
-            const existing = prev.find(item => item.id === product.id);
+            const existing = prev.find(p => p.id === product.id);
             if (existing) {
-                return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+                addNotification('success', 'Updated', `${product.name} +${quantity}`);
+                return prev.map(p => p.id === product.id ? { ...p, quantity: p.quantity + quantity } : p);
             }
-            return [...prev, { ...product, quantity: 1 }];
+            addNotification('success', 'Added', `${product.name} added to cart.`);
+            return [...prev, { ...product, quantity }];
         });
+    };
+
+    const updateCartQuantity = (productId: string, quantity: number) => {
+        setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity: Math.max(1, quantity) } : item));
     };
 
     const removeFromCart = (productId: string) => {
         setCart(prev => prev.filter(item => item.id !== productId));
     };
 
-    const updateQuantity = (productId: string, quantity: number) => {
-        if (quantity < 1) return removeFromCart(productId);
-        setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity } : item));
+    const clearCart = () => setCart([]);
+
+    // 4. Auth Logic (Simulation)
+    const login = (email: string, role: UserRole): boolean => {
+        // Simulating a successful login for demo
+        const mockUser: User = {
+            id: `U-${Date.now()}`,
+            name: 'Demo User',
+            email,
+            role,
+            status: 'active',
+            walletBalance: 0,
+            rewardPoints: 0
+        };
+        setUser(mockUser);
+        addNotification('success', 'Welcome', `Logged in as ${role}`);
+        return true;
     };
 
-    const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-
-    const login = (email: string, role: User['role']) => {
-        setUser({
-            id: 'u1', name: 'Demo User', email, role,
-            walletBalance: 0, rewardPoints: 0, memberTier: 'regular'
-        });
+    const logout = () => {
+        setUser(null);
+        setCart([]);
+        addNotification('info', 'Goodbye', 'Logged out successfully');
     };
 
-    const logout = () => setUser(null);
-    const addNotification = (n: any) => setNotifications(prev => [n, ...prev]);
+    const register = (name: string, email: string, role: UserRole) => {
+        login(email, role); // Auto login on register for demo
+        return { success: true, message: 'Account created' };
+    };
+
+    // 5. Order Logic
+    const placeOrder = (shippingAddress: string, paymentMethod: string) => {
+        if (!user) return;
+        const newOrder: Order = {
+            id: `ORD-${Date.now()}`,
+            userId: user.id,
+            items: [...cart],
+            totalAmount: cart.reduce((acc, item) => acc + (item.price * item.quantity), 0),
+            status: 'pending',
+            date: new Date().toISOString(),
+            shippingAddress,
+            paymentMethod
+        };
+        setOrders(prev => [newOrder, ...prev]);
+        setNewOrderIds(prev => [newOrder.id, ...prev]);
+        clearCart();
+    };
+
+    const updateOrderStatus = (id: string, status: Order['status']) => {
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+    }
+
+    const addNotification = (type: any, title: string, message: string) => {
+        const id = Date.now().toString();
+        setNotifications(prev => [...prev, { id, type, title, message }]);
+        setTimeout(() => setNotifications(prev => prev.filter(n => n.id !== id)), 3000);
+    };
+
     const removeNotification = (id: string) => setNotifications(prev => prev.filter(n => n.id !== id));
-
-    const toggleTheme = () => {
-        setTheme(prev => prev === 'light' ? 'dark' : 'light');
-        if (theme === 'light') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    };
 
     return (
         <StoreContext.Provider value={{
-            user, products, cart, addToCart, removeFromCart, updateQuantity, cartTotal,
-            login, logout, notifications, addNotification, removeNotification,
-            users: [], orders: [], theme, toggleTheme
+            user, products, cart, orders, notifications, newOrderIds, theme,
+            toggleTheme, login, logout, register,
+            addToCart, removeFromCart, updateCartQuantity, clearCart,
+            placeOrder, updateOrderStatus,
+            addNotification, removeNotification,
+            users: [], cartTotal: cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)
         }}>
             {children}
         </StoreContext.Provider>
@@ -132,6 +158,6 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useStore = () => {
     const context = useContext(StoreContext);
-    if (!context) throw new Error("useStore must be used within StoreProvider");
+    if (!context) throw new Error('useStore must be used within a StoreProvider');
     return context;
 };

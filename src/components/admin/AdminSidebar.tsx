@@ -13,7 +13,7 @@ const AdminSidebar: React.FC = () => {
     const { logout } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard' },
+        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard?view=overview' },
         { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', badge: true }, // Logic badge nanti dihubungkan
         { icon: Package, label: 'Manajemen Produk', path: '/dashboard?view=products' },
         { icon: Users, label: 'Reseller & User', path: '/dashboard?view=users' },

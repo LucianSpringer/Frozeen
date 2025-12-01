@@ -8,7 +8,7 @@ import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
-    const { cart, updateQuantity, removeFromCart, cartTotal } = useStore();
+    const { cart, updateCartQuantity, removeFromCart, cartTotal } = useStore();
     const router = useRouter();
 
     return (
@@ -30,9 +30,9 @@ export default function CartPage() {
                                         <p className="text-sky-600">Rp {item.price.toLocaleString()}</p>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 bg-slate-100 rounded">-</button>
+                                        <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)} className="w-8 h-8 bg-slate-100 rounded">-</button>
                                         <span className="font-bold">{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 bg-slate-100 rounded">+</button>
+                                        <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)} className="w-8 h-8 bg-slate-100 rounded">+</button>
                                     </div>
                                     <button onClick={() => removeFromCart(item.id)} className="text-red-500"><Trash2 size={20} /></button>
                                 </div>

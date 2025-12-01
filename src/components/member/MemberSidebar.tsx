@@ -14,7 +14,7 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutGrid, label: 'Beranda Member', path: '/dashboard' },
+        { icon: LayoutGrid, label: 'Beranda Member', path: '/dashboard?view=overview' },
         { icon: ShoppingBag, label: 'Katalog Belanja', path: '/products' },
         { icon: ShoppingCart, label: 'Keranjang Saya', path: '/cart', badge: true },
         { icon: Clock, label: 'Riwayat Pesanan', path: '/dashboard?view=orders' },

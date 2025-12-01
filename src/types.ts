@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'reseller' | 'customer';
+export type UserRole = 'admin' | 'reseller' | 'customer' | 'member';
 
 export interface ResellerTier {
   level: 'pemula' | 'silver' | 'gold';

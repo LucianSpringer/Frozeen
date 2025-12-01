@@ -7,7 +7,7 @@ import { DollarSign, Users, ShoppingBag, TrendingUp, AlertCircle } from 'lucide-
 const AdminView: React.FC = () => {
     const { orders, products, users } = useStore();
 
-    const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
+    const totalRevenue = orders.reduce((acc, order) => acc + order.totalAmount, 0);
     const pendingOrders = orders.filter(o => o.status === 'pending').length;
     const lowStockProducts = products.filter(p => p.stock < 10).length;
 
@@ -92,12 +92,12 @@ const AdminView: React.FC = () => {
                             {orders.slice(0, 5).map((order) => (
                                 <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">#{order.id}</td>
-                                    <td className="px-6 py-4">{order.customerName}</td>
-                                    <td className="px-6 py-4">Rp {order.total.toLocaleString()}</td>
+                                    <td className="px-6 py-4">{users.find(u => u.id === order.userId)?.name || order.userId}</td>
+                                    <td className="px-6 py-4">Rp {order.totalAmount.toLocaleString()}</td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                                order.status === 'pending' ? 'bg-orange-100 text-orange-700' :
-                                                    'bg-slate-100 text-slate-700'
+                                            order.status === 'pending' ? 'bg-orange-100 text-orange-700' :
+                                                'bg-slate-100 text-slate-700'
                                             }`}>
                                             {order.status.toUpperCase()}
                                         </span>
