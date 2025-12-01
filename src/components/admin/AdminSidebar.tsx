@@ -20,7 +20,7 @@ const AdminSidebar: React.FC = () => {
         { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', view: 'orders', badge: true },
         { icon: Package, label: 'Produk', path: '/dashboard?view=products', view: 'products' },
         { icon: Users, label: 'User & Reseller', path: '/dashboard?view=users', view: 'users' },
-        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=loyalty', view: 'loyalty' }, // IMPORTANT
+        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=loyalty', view: 'loyalty' },
         { icon: TrendingUp, label: 'Keuangan', path: '/dashboard?view=finance', view: 'finance' },
         { icon: MessageSquare, label: 'Broadcast WA', path: '/dashboard?view=broadcast', view: 'broadcast' },
         { icon: Settings, label: 'Pengaturan', path: '/dashboard?view=settings', view: 'settings' },
@@ -42,8 +42,8 @@ const AdminSidebar: React.FC = () => {
                             key={item.label}
                             href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
-                                ? 'bg-sky-600 text-white shadow-lg'
-                                : 'text-slate-400 hover:bg-slate-800'
+                                ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/50'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                                 }`}
                         >
                             <item.icon size={20} />

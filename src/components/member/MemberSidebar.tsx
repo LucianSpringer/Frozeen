@@ -37,10 +37,20 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
             {isOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm" onClick={() => setIsOpen(false)} />}
 
             <aside className={sidebarClasses}>
-                {/* ... (Keep Header Code) ... */}
                 <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-sky-50/30 dark:bg-slate-800/50">
-                    <h3 className="font-bold text-slate-900 dark:text-white">{user?.name}</h3>
-                    <p className="text-xs text-slate-500">MEMBER VIP</p>
+                    {/* Profile Header */}
+                    <div className="flex items-center gap-4">
+                        <div className="relative">
+                            <div className="w-14 h-14 rounded-full bg-slate-200 overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm">
+                                <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=0ea5e9&color=fff`} alt="Profile" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 bg-yellow-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-white dark:border-slate-900 text-slate-900 shadow-sm">MEMBER</div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-slate-900 dark:text-white truncate">{user?.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user?.email}</p>
+                        </div>
+                    </div>
                 </div>
 
                 <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-280px)]">
@@ -53,7 +63,7 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
                                         ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 font-bold'
-                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50'
+                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                                     }`}
                             >
                                 <item.icon size={20} className={isActive ? 'text-sky-600' : 'text-slate-400'} />
@@ -63,8 +73,8 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
                     })}
                 </nav>
 
-                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100">
-                    <button onClick={logout} className="flex items-center justify-center gap-2 w-full py-2.5 text-slate-500 hover:text-red-500 font-medium text-sm">
+                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100 dark:border-slate-800">
+                    <button onClick={logout} className="flex items-center justify-center gap-2 w-full py-2.5 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-red-500 rounded-lg transition font-medium text-sm">
                         <LogOut size={18} /> Logout
                     </button>
                 </div>

@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link'; // CHANGED
+import { usePathname, useRouter } from 'next/navigation'; // CHANGED
 import { ShoppingCart, User, Menu, X, LogOut, LayoutDashboard, Sun, Moon } from 'lucide-react';
-import { useStore } from '../context/StoreContext';
+import { useStore } from '@/context/StoreContext';
 
 const Navbar: React.FC = () => {
   const { user, cart, logout, theme, toggleTheme } = useStore();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname(); // CHANGED from useLocation
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -34,14 +34,9 @@ const Navbar: React.FC = () => {
     const isActive = pathname === path;
     const baseClass = "font-medium transition-colors duration-300";
 
-    // On transparent Home hero (Light mode only effect basically, in Dark mode simplified)
     if (isHome && !isScrolled) {
-      // If theme is dark, even "transparent" hero needs to be readable.
-      // Assuming Hero is always an image/video, white text is safer.
       return `${baseClass} ${isActive ? "text-sky-400 font-bold" : "text-white/90 hover:text-sky-400"}`;
     }
-
-    // Normal background (Sticky or other pages)
     return `${baseClass} ${isActive ? "text-sky-500 dark:text-sky-400 font-bold" : "text-slate-600 dark:text-slate-300 hover:text-sky-500 dark:hover:text-sky-400"}`;
   };
 
@@ -75,7 +70,6 @@ const Navbar: React.FC = () => {
             <Link href="/" className={getLinkClass('/')}>Beranda</Link>
             <Link href="/products" className={getLinkClass('/products')}>Katalog Produk</Link>
 
-            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               className={`p-2 rounded-full transition-colors ${iconClass}`}
