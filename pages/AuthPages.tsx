@@ -60,6 +60,7 @@ export const LoginPage: React.FC = () => {
           <ul className="mt-1 space-y-1">
             <li>Admin: admin@frozeen.id</li>
             <li>Reseller: budi@gmail.com</li>
+            <li>Pelanggan: siti@gmail.com</li>
           </ul>
         </div>
       </div>

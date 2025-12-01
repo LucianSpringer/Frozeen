@@ -100,7 +100,7 @@ const WhatsAppWidget = () => {
   );
 };
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children?: React.ReactNode }) => {
   return (
     <>
       <Navbar />
