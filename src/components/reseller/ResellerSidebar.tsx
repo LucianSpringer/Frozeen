@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard, ShoppingBag, ShoppingCart,
     Users, DollarSign, User, Share2, LogOut,
@@ -8,18 +9,18 @@ import {
 import { useStore } from '../../context/StoreContext';
 
 const ResellerSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void }> = ({ isOpen, setIsOpen }) => {
-    const location = useLocation();
+    const pathname = usePathname();
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/reseller/dashboard' },
-        { icon: ShoppingBag, label: 'Katalog Produk', path: '/reseller/catalog' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+        { icon: ShoppingBag, label: 'Katalog Produk', path: '/products' },
         { icon: ShoppingCart, label: 'Keranjang', path: '/cart', badge: true },
-        { icon: Users, label: 'Downline Saya', path: '/reseller/downlines' },
-        { icon: DollarSign, label: 'Komisi & Bonus', path: '/reseller/finance' },
-        { icon: Target, label: 'Target & Reward', path: '/reseller/rewards' },
-        { icon: Share2, label: 'Materi Promosi', path: '/reseller/marketing' },
-        { icon: User, label: 'Profil Akun', path: '/reseller/profile' },
+        { icon: Users, label: 'Downline Saya', path: '/dashboard?view=referral' },
+        { icon: DollarSign, label: 'Komisi & Bonus', path: '/dashboard?view=referral' },
+        { icon: Target, label: 'Target & Reward', path: '/dashboard?view=rewards' },
+        { icon: Share2, label: 'Materi Promosi', path: '/dashboard?view=referral' },
+        { icon: User, label: 'Profil Akun', path: '/dashboard' },
     ];
 
     const sidebarClasses = `fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
@@ -58,15 +59,15 @@ const ResellerSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => vo
                 {/* Navigation */}
                 <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-180px)]">
                     {menuItems.map((item) => {
-                        const isActive = location.pathname === item.path;
+                        const isActive = pathname === item.path;
                         return (
                             <Link
                                 key={item.path}
-                                to={item.path}
+                                href={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                        ? 'bg-sky-600 text-white shadow-md shadow-sky-200 dark:shadow-none'
-                                        : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600'
+                                    ? 'bg-sky-600 text-white shadow-md shadow-sky-200 dark:shadow-none'
+                                    : 'text-slate-600 dark:text-slate-400 hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600'
                                     }`}
                             >
                                 <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-sky-500'} />

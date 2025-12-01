@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
     LayoutGrid, ShoppingBag, ShoppingCart,
     MapPin, Heart, Clock, Star,
@@ -9,20 +10,20 @@ import {
 import { useStore } from '../../context/StoreContext';
 
 const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void }> = ({ isOpen, setIsOpen }) => {
-    const location = useLocation();
+    const pathname = usePathname();
     const { logout, user } = useStore();
 
     const menuItems = [
-        { icon: LayoutGrid, label: 'Beranda Member', path: '/member/dashboard' },
+        { icon: LayoutGrid, label: 'Beranda Member', path: '/dashboard' },
         { icon: ShoppingBag, label: 'Katalog Belanja', path: '/products' },
         { icon: ShoppingCart, label: 'Keranjang Saya', path: '/cart', badge: true },
-        { icon: Clock, label: 'Riwayat Pesanan', path: '/member/orders' },
-        { icon: Heart, label: 'Produk Favorit', path: '/member/wishlist' },
-        { icon: MapPin, label: 'Alamat Pengiriman', path: '/member/addresses' },
-        { icon: Gift, label: 'Poin & Reward', path: '/member/rewards' },
-        { icon: TrendingUp, label: 'Program Partner', path: '/member/referral' },
-        { icon: Star, label: 'Ulasan Saya', path: '/member/reviews' },
-        { icon: UserIcon, label: 'Profil & Password', path: '/member/profile' },
+        { icon: Clock, label: 'Riwayat Pesanan', path: '/dashboard?view=orders' },
+        { icon: Heart, label: 'Produk Favorit', path: '/dashboard?view=wishlist' },
+        { icon: MapPin, label: 'Alamat Pengiriman', path: '/dashboard?view=addresses' },
+        { icon: Gift, label: 'Poin & Reward', path: '/dashboard?view=rewards' },
+        { icon: TrendingUp, label: 'Program Partner', path: '/dashboard?view=referral' },
+        { icon: Star, label: 'Ulasan Saya', path: '/dashboard?view=reviews' },
+        { icon: UserIcon, label: 'Profil & Password', path: '/dashboard?view=profile' },
     ];
 
     const sidebarClasses = `fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -69,7 +70,7 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
 
                 {/* Upgrade Banner (The Upsell) */}
                 <div className="px-4 pt-4">
-                    <Link to="/register?role=reseller" className="block relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 to-red-500 p-4 text-white shadow-lg shadow-orange-500/20 group hover:shadow-orange-500/40 transition-all">
+                    <Link href="/register?role=reseller" className="block relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 to-red-500 p-4 text-white shadow-lg shadow-orange-500/20 group hover:shadow-orange-500/40 transition-all">
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-1">
                                 <TrendingUp size={16} className="animate-bounce" />
@@ -87,11 +88,11 @@ const MemberSidebar: React.FC<{ isOpen: boolean, setIsOpen: (v: boolean) => void
                 {/* Navigation */}
                 <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100vh-280px)]">
                     {menuItems.map((item) => {
-                        const isActive = location.pathname === item.path;
+                        const isActive = pathname === item.path;
                         return (
                             <Link
                                 key={item.path}
-                                to={item.path}
+                                href={item.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${isActive
                                     ? 'bg-sky-50 dark:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold'

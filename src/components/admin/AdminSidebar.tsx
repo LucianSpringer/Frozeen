@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard, ShoppingBag, Package, Users,
     FileText, Settings, MessageSquare, LogOut,
@@ -8,19 +9,19 @@ import {
 import { useStore } from '../../context/StoreContext';
 
 const AdminSidebar: React.FC = () => {
-    const location = useLocation();
+    const pathname = usePathname();
     const { logout } = useStore();
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/admin/dashboard' },
-        { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/admin/orders', badge: true }, // Logic badge nanti dihubungkan
-        { icon: Package, label: 'Manajemen Produk', path: '/admin/products' },
-        { icon: Users, label: 'Reseller & User', path: '/admin/users' },
-        { icon: Award, label: 'Loyalty System', path: '/admin/loyalty' },
-        { icon: TrendingUp, label: 'Keuangan & Laporan', path: '/admin/finance' },
-        { icon: MessageSquare, label: 'Broadcast WA', path: '/admin/broadcast' },
-        { icon: Settings, label: 'Pengaturan Website', path: '/admin/settings' },
-        { icon: Shield, label: 'Log Aktivitas', path: '/admin/logs' },
+        { icon: LayoutDashboard, label: 'Dashboard Home', path: '/dashboard' },
+        { icon: ShoppingBag, label: 'Pesanan Masuk', path: '/dashboard?view=orders', badge: true }, // Logic badge nanti dihubungkan
+        { icon: Package, label: 'Manajemen Produk', path: '/dashboard?view=products' },
+        { icon: Users, label: 'Reseller & User', path: '/dashboard?view=users' },
+        { icon: Award, label: 'Loyalty System', path: '/dashboard?view=manage-rewards' },
+        { icon: TrendingUp, label: 'Keuangan & Laporan', path: '/dashboard?view=finance' },
+        { icon: MessageSquare, label: 'Broadcast WA', path: '/dashboard?view=broadcast' },
+        { icon: Settings, label: 'Pengaturan Website', path: '/dashboard?view=settings' },
+        { icon: Shield, label: 'Log Aktivitas', path: '/dashboard?view=logs' },
     ];
 
     return (
@@ -32,11 +33,11 @@ const AdminSidebar: React.FC = () => {
 
             <nav className="p-4 space-y-2">
                 {menuItems.map((item) => {
-                    const isActive = location.pathname === item.path;
+                    const isActive = pathname === item.path;
                     return (
                         <Link
                             key={item.path}
-                            to={item.path}
+                            href={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${isActive
                                 ? 'bg-sky-600 text-white shadow-lg shadow-sky-900/50'
                                 : 'text-slate-400 hover:bg-slate-800 hover:text-white'
