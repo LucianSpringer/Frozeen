@@ -37,7 +37,8 @@ interface StoreContextType {
     cart: any[];
     addToCart: (product: Product) => void;
     removeFromCart: (productId: string) => void;
-    updateCartQuantity: (productId: string, quantity: number) => void;
+    updateQuantity: (productId: string, quantity: number) => void;
+    cartTotal: number;
     login: (email: string, role: User['role']) => void;
     logout: () => void;
     notifications: any[];
@@ -67,18 +68,36 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
                 price: 45000, resellerPrice: 35000, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=500',
                 stock: 150, weight: 500, minOrder: 1, composition: 'Daging Ayam, Tepung Roti, Bumbu'
             },
-            // ... more products can be added here
+            {
+                id: 'p2', sku: 'SOS-002', name: 'Sosis Sapi Jumbo', category: 'Bakso & Sosis',
+                description: 'Sosis sapi asli dengan rempah pilihan.',
+                price: 55000, resellerPrice: 45000, image: 'https://images.unsplash.com/photo-1595480670328-b06ab5e6c230?q=80&w=500',
+                stock: 100, weight: 1000, minOrder: 1
+            }
         ];
         setProducts(mockProducts);
     }, []);
 
     const addToCart = (product: Product) => {
-        console.log('Adding to cart:', product.name);
-        // Implementation skipped for brevity in shim
+        setCart(prev => {
+            const existing = prev.find(item => item.id === product.id);
+            if (existing) {
+                return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+            }
+            return [...prev, { ...product, quantity: 1 }];
+        });
     };
 
-    const removeFromCart = (productId: string) => { };
-    const updateCartQuantity = (productId: string, quantity: number) => { };
+    const removeFromCart = (productId: string) => {
+        setCart(prev => prev.filter(item => item.id !== productId));
+    };
+
+    const updateQuantity = (productId: string, quantity: number) => {
+        if (quantity < 1) return removeFromCart(productId);
+        setCart(prev => prev.map(item => item.id === productId ? { ...item, quantity } : item));
+    };
+
+    const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
     const login = (email: string, role: User['role']) => {
         setUser({
@@ -88,8 +107,8 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const logout = () => setUser(null);
-    const addNotification = (n: any) => { };
-    const removeNotification = (id: string) => { };
+    const addNotification = (n: any) => setNotifications(prev => [n, ...prev]);
+    const removeNotification = (id: string) => setNotifications(prev => prev.filter(n => n.id !== id));
 
     const toggleTheme = () => {
         setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -102,7 +121,7 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <StoreContext.Provider value={{
-            user, products, cart, addToCart, removeFromCart, updateCartQuantity,
+            user, products, cart, addToCart, removeFromCart, updateQuantity, cartTotal,
             login, logout, notifications, addNotification, removeNotification,
             users: [], orders: [], theme, toggleTheme
         }}>
