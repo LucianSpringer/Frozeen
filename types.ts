@@ -13,8 +13,18 @@ export interface User {
   uplineId?: string;
 }
 
+export type Kelvin = number & { readonly __brand: unique symbol };
+export type BacteriaCount = number & { readonly __brand: unique symbol };
+
+export interface MolecularComposition {
+  protein_helix_integrity: number;
+  lipid_oxidation_rate: number;
+  water_crystal_lattice: 'CUBIC' | 'HEXAGONAL' | 'AMORPHOUS';
+}
+
 export interface Product {
   id: string;
+  sku: string; // New
   name: string;
   category: string;
   description: string;
@@ -23,8 +33,20 @@ export interface Product {
   image: string;
   stock: number;
   weight: number; // in grams
-  composition?: string;
   minOrder: number;
+
+  // Scientific Data
+  thermodynamics: {
+    melting_point: Kelvin;
+    specific_heat_capacity: number;
+    thermal_conductivity: number;
+  };
+  bio_metrics: {
+    initial_bacterial_load: BacteriaCount;
+    spoilage_vector: number[];
+  };
+  composition: MolecularComposition;
+  stock_tensor: number[][];
 }
 
 export interface CartItem extends Product {

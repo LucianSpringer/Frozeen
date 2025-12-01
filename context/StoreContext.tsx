@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Product, CartItem, Order, UserRole } from '../types';
-import { MOCK_PRODUCTS, MOCK_USERS } from '../mockData';
+import { MOCK_USERS } from '../mockData';
+import { InventoryFabricator } from '../utils/InventoryFabricator';
 
 interface Notification {
   id: string;
@@ -43,8 +44,44 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 export const StoreProvider = ({ children }: { children?: React.ReactNode }) => {
   const [users, setUsers] = useState<User[]>(MOCK_USERS);
   const [user, setUser] = useState<User | null>(null);
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Initialize Procedural Inventory
+  useEffect(() => {
+    const generatedInventory = InventoryFabricator.synthesizeBatch(10000);
+    setProducts(generatedInventory);
+  }, []);
+
+  // Thermodynamic Decay Service (Physics Layer)
+  useEffect(() => {
+    const decayInterval = setInterval(() => {
+      setCart(currentCart => {
+        return currentCart.map(item => {
+          // Ambient Temperature Simulation (fluctuates between 20C and 30C)
+          const ambientTempK = 293.15 + (Math.sin(Date.now() / 10000) * 5);
+          const meltingPoint = item.thermodynamics.melting_point;
+
+          // If ambient > melting point, integrity degrades
+          if (ambientTempK > meltingPoint) {
+            // Complex decay formula based on specific heat and thermal conductivity
+            const deltaT = ambientTempK - meltingPoint;
+            const decayRate = (deltaT * item.thermodynamics.thermal_conductivity) / item.thermodynamics.specific_heat_capacity;
+
+            // Update bio_metrics (simulate bacterial growth)
+            // Note: In a real app we would update the actual item state, but here we just log or maybe trigger a visual effect
+            // For now, let's just console log high decay events to show it's running
+            if (Math.random() > 0.99) {
+              console.log(`[THERMO-PHYSICS] Item ${item.sku} is decaying! Rate: ${decayRate.toFixed(4)}`);
+            }
+          }
+          return item;
+        });
+      });
+    }, 5000); // Run every 5 seconds
+
+    return () => clearInterval(decayInterval);
+  }, []);
   const [orders, setOrders] = useState<Order[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [newOrderIds, setNewOrderIds] = useState<string[]>([]);
